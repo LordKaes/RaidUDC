@@ -1,0 +1,119 @@
+FORMULA Nº1:
+This formula calculates the effective defense(*) of an enemy. 
+
+
+(*) The effective defense is the final calculated defense. 
+    For example: the defense can be reduced with the decrease defense debuff. (30% or 60%)
+    So, the efective defense will be DEFENSE * 0.3.
+
+
+This is the enemy defense:
+
+A6                             
+
+Here, it assigns the dec.def:
+
+* IFS ( 
+A10 = 30%, 0.7,
+A10=60%, 0.4, 
+A10="None", 1 )    
+
+
+Here, it looks for the sets:
+
+* IFS (
+C6="Savage", 0.75, 
+C6="Savage + Cruel", 0.7,
+C6="1x Cruel", 0.95,
+C6="2x Cruel", 0.9, 
+C6="3x Cruel", 0.85, 
+C6="None", 1)                                                           
+
+
+Here, it looks for the CR blessing:
+
+* IFS ( 
+B18 = "N/A", 1,
+B18 = "1-2 star", 1 - ( 0.01 * ( C18 / 50 ) ),
+B18 = "3-4 star", 1 - ( 0.01 * ( C18 / 40 ) ),
+B18 = "5 star", 1 - ( 0.01 * ( C18 / 25 ) ),
+B18 = "6 star", 1 - ( 0.01 * ( C18 / 10 ) ) )
+
+Here, it looks for the Cruelty blessing:
+* (1 - IFS(
+    A18 = "None", 1,
+    A18 = "1-2 star", 0.1,
+    A18 = "3-4 star", 0.2,
+    A18 = "5 star", 0.3,
+    A18 = "6 star", 0.4)
+
+
+------------------------------------------------------------------
+What it does: 
+Checks which inputted DEC DEF debuff there is (30% or 60%). 
+Next it checks for any gear sets, and multiplies the original def by the multipliers
+if they were being used, (which reduces the effective def), it checks for blessings,
+if there is a match, it again multiplies the effective def, making it smaller.
+------------------------------------------------------------------
+
+
+2. Forumula:
+
+IFERROR ( ( 1 - 0.85 * ( 1 - EXP ( -2 * A26 / 3000 ) ) ) * 0.9
+
+*IF ( 
+A14="Yes", 1.05,
+A14="No", 1)
+
+*IF (
+B14="Yes", 1.08,
+B14="No", 1) 
+
+*IF (
+C14="Yes", 1.06,
+C14="No", 1)
+
+*IF ( 
+C10="Yes", 0.75,
+C10="No", 1 ) 
+
+*IFS (
+B10=15%, 1.15,
+B10=25%, 1.25,
+B10="None", 1)
+
+*IF (
+A23="Yes", 1.2,
+A23="No", 1 ) 
+
+*IF(
+B23="Yes", 1.1,
+B23="No", 1 ) 
+
+*IFS (
+D14="N/A", 1,
+D14="1 kill", 1.03,
+D14="2 kills", 1.06,
+D14="3 kills", 1.09, 
+D14="4 kills", 1.12)
+
+*IFS (
+C23="N/A", 1, 
+C23=7.5%, 1.075, 
+C23=15%, 1.15, 
+C23=22.5%, 1.225, 
+C23=30%, 1.3 
+) ,"N/A" )
+
+------------------------------------------------------------------
+A26 is the effective def, 
+basiccally it returns the reciprocal of the def with seers multipliers plus some extra multipliers.
+
+The -2 is used as the negative power,
+for example, with this rule of reciprocals 1/3^-2 would be 9
+
+This formula finds the exponential function of the effective defense,
+and uses 3000 to represent seers multpiers. 
+It checks for weaken, and again multiplies the exponential function of the modified effective
+def by the multplier it checks for, repeated mutliple times.
+------------------------------------------------------------------
